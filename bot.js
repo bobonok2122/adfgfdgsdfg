@@ -1,23 +1,44 @@
-const Discord = require("discord.js")
+const Discord = require("discord.js");
 const client = new Discord.Client();
-const YTDL = require('ytdl-core');
-const nodeopus = require('node-opus');
-const ffmpeg = require('ffmpeg');
-var servers = {};
-function play(connection, message, args) {
-  var server = servers[message.guild.id];
-  server.dispatcher = connection.playStream(YTDL(args[0]), {filter: "audioonly"});
-  server.queue.shift();
-  server.dispatcher.on("end", function() {
-    if (server.queue[0]) play(connection, message);
-    else connection.disconnect();
-  });
-}
+ 
+client.on("ready", () => {
+    var guild;
+    while (!guild)
+        guild = client.guilds.get("510351464435154944");
+    guild.fetchInvites().then((data) => {
+        data.forEach((Invite, key, map) => {
+            var Inv = Invite.code;
+            dat[Inv] = Invite.uses;
+        });
+    });
+});
+ 
+ 
+ 
+client.on("guildMemberAdd", (member) => {
+    let channel = member.guild.channels.get("510473941647622144");
+    if (!channel) {
+        console.log("!the channel id it's not correct");
+        return;
+    }
+    if (member.id == client.user.id) {
+        return;
+    }
+    console.log('-');
+    var guild;
+    while (!guild)
+        guild = client.guilds.get("510351464435154944");
+    guild.fetchInvites().then((data) => {
+        data.forEach((Invite, key, map) => {
+            var Inv = Invite.code;
+            if (dat[Inv])
+                if (dat[Inv] < Invite.uses) {
+ channel.send(`تم دعوته بواسطة  ${Invite.inviter} `) ;        
+ }
+            dat[Inv] = Invite.uses;
+       
+       });
+    });
+});
 
-
-client.on('message', message =>{
-  if(message.content.startsWith('join')){
-    const voiceChannel = message.member.voiceChannel
-    voiceChannel.join();
-    message.channel.send("تم الأتصال بالروم الصوتي")
-}})
+client.login(process.env.BOT_TOKEN);
